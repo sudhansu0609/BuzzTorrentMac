@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<title>BuzzTorrent Remote</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/remote.css">
+</head>
+<body>
+<header class="bar">
+  <img src="/favicon.svg" alt="">
+  <div>
+    <div class="name">BuzzTorrent Remote</div>
+    <div class="sub" id="status">Connecting to your PC…</div>
+  </div>
+  <button type="button" class="ghost" id="homeBtn">TV home</button>
+</header>
+
+<section id="pairBox" class="card" hidden>
+  <h1>Pair this phone</h1>
+  <p>Enter the 6-digit PIN from BuzzTorrent on the PC (Settings → Living-room TV).</p>
+  <form id="pairForm" class="row">
+    <input id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="PIN" aria-label="PIN">
+    <button type="submit" class="primary">Pair</button>
+  </form>
+  <p class="err" id="pairErr" role="alert"></p>
+</section>
+
+<main id="app" hidden>
+  <form id="searchForm" class="search" role="search">
+    <input id="q" type="search" enterkeyhint="search" placeholder="Search, or tap the mic on your keyboard"
+           autocomplete="off" aria-label="Search">
+    <button type="submit" class="primary">Search on TV</button>
+  </form>
+  <div class="chips" id="cats" aria-label="Category"></div>
+  <div class="chips" id="langs" aria-label="Language"></div>
+  <p class="hint" id="hint">Results appear on your TV. Tap one here to open it there.</p>
+  <ul class="results" id="results"></ul>
+</main>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script src="/remote.js"></script>
+</body>
+</html>

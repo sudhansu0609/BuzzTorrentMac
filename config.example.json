@@ -1,0 +1,24 @@
+{
+  "host": "127.0.0.1",
+  "port": 8765,
+  "archive_org": true,
+  "torznab": [
+    {
+      "name": "Jackett",
+      "url": "http://127.0.0.1:9117/api/v2.0/indexers/all/results/torznab/api",
+      "apikey": "PASTE_YOUR_JACKETT_API_KEY",
+      "enabled": false
+    },
+    {
+      "name": "Prowlarr",
+      "url": "http://127.0.0.1:9696/1/api",
+      "apikey": "PASTE_YOUR_PROWLARR_API_KEY",
+      "enabled": false
+    }
+  ],
+  "extra_trackers": [
+    "udp://tracker.opentrackr.org:1337/announce",
+    "udp://open.demonii.com:1337/announce"
+  ],
+  "cache_ttl": 600
+}

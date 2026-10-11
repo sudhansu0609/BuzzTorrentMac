@@ -1,0 +1,11 @@
+config.json
+config.tmp
+__pycache__/
+*.pyc
+.buzztorrent.pid
+data/
+quarantine/
+dist/
+android/build/
+android/*.keystore
+*.log

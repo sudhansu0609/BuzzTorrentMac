@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="dark light">
+  <!-- the app has its own dark theme; stop Dark Reader-style extensions re-colouring it -->
+  <meta name="darkreader-lock">
+  <title>BuzzTorrent</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" sizes="192x192" type="image/png">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="mode-home">
+<svg width="0" height="0" class="sprite" aria-hidden="true">
+  <defs>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"/><path d="m20.5 20.5-4.2-4.2"/></symbol>
+    <symbol id="i-magnet" viewBox="0 0 24 24"><path d="m6 15-4-4 6.75-6.77a7.79 7.79 0 0 1 11 11L13 22l-4-4 6.39-6.36a2.14 2.14 0 0 0-3-3L6 15"/><path d="m5 8 4 4M12 15l4 4"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect width="13" height="13" x="8" y="8" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M20 7h-9M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+    <symbol id="i-all" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="3" rx="1.5"/><rect width="7" height="7" x="14" y="14" rx="1.5"/><rect width="7" height="7" x="3" y="14" rx="1.5"/></symbol>
+    <symbol id="i-movies" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18M17 3v18M3 7.5h4M3 12h18M3 16.5h4M17 7.5h4M17 16.5h4"/></symbol>
+    <symbol id="i-tv" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="m17 2-5 5-5-5"/></symbol>
+    <symbol id="i-games" viewBox="0 0 24 24"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><path d="M17.32 5H6.68a4 4 0 0 0-3.98 3.59l-.9 8.1A2.5 2.5 0 0 0 4.3 19.5c.8 0 1.5-.4 2-1l1.9-2.5h7.6l1.9 2.5c.5.6 1.2 1 2 1a2.5 2.5 0 0 0 2.5-2.8l-.9-8.1A4 4 0 0 0 17.32 5z"/></symbol>
+    <symbol id="i-software" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+    <symbol id="i-books" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+    <symbol id="i-other" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+    <symbol id="i-safe" viewBox="0 0 24 24"><use href="#i-shield"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-caution" viewBox="0 0 24 24"><use href="#i-shield"/><path d="M12 8v4M12 16h.01"/></symbol>
+    <symbol id="i-danger" viewBox="0 0 24 24"><use href="#i-shield"/><path d="m14.5 9.5-5 5M9.5 9.5l5 5"/></symbol>
+    <symbol id="i-scan" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><circle cx="11.5" cy="14.5" r="2.5"/><path d="m13.3 16.3 1.7 1.7"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 11 6-6 6 6M12 19V5"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M18 13l-6 6-6-6"/></symbol>
+    <symbol id="i-drive" viewBox="0 0 24 24"><path d="M22 12H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><path d="M6 16h.01M10 16h.01"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M8 16H3v5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.5 2.3a.6.6 0 0 1 1 0l2.6 5.4 5.9.9a.6.6 0 0 1 .3 1l-4.3 4.2 1 5.9a.6.6 0 0 1-.8.6L12 17.5l-5.2 2.8a.6.6 0 0 1-.8-.6l1-5.9-4.3-4.2a.6.6 0 0 1 .3-1l5.9-.9z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r="1"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-plug" viewBox="0 0 24 24"><path d="M12 22v-5M9 8V2M15 8V2M18 8v5a6 6 0 0 1-12 0V8z"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <a class="brand" href="/" id="homeLink" aria-label="BuzzTorrent home">
+    <span class="brand-mark"><svg><use href="#i-bolt"/></svg></span>
+    <span class="brand-name">Buzz<b>Torrent</b></span>
+  </a>
+  <form class="search search-top" id="searchTop" role="search" autocomplete="off">
+    <svg class="search-icon"><use href="#i-search"/></svg>
+    <input id="qTop" type="search" maxlength="200" placeholder="Search movies, games, books, music…" aria-label="Search"
+           role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggestTop">
+    <div class="suggest-box" id="suggestTop" role="listbox" hidden></div>
+    <button type="button" class="mic-btn" id="micTop" hidden aria-label="Voice search" title="Voice search">🎤</button>
+    <kbd>/</kbd>
+  </form>
+  <div class="top-actions">
+    <button class="btn btn-ghost btn-sm browse-btn" id="browseBtn" type="button" title="Browse popular picks by category">
+      <svg><use href="#i-all"/></svg><span>Browse</span>
+    </button>
+    <button class="btn btn-ghost btn-sm browse-btn" id="libraryBtn" type="button" title="Videos on this PC, ready to play">
+      <svg><use href="#i-folder"/></svg><span>My PC</span>
+    </button>
+    <button class="icon-btn scanner-btn" id="downloadsBtn" type="button" aria-label="Downloads" title="Downloads">
+      <svg><use href="#i-download"/></svg><span class="badge-dot dl-count" id="dlBadge" hidden></span>
+    </button>
+    <button class="icon-btn scanner-btn" id="scannerBtn" type="button" aria-label="Download scanner" title="Download scanner">
+      <svg><use href="#i-safe"/></svg><span class="badge-dot" id="scannerBadge" hidden></span>
+    </button>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle theme" title="Toggle theme">
+      <svg class="show-dark"><use href="#i-sun"/></svg><svg class="show-light"><use href="#i-moon"/></svg>
+    </button>
+    <button class="icon-btn" id="settingsBtn" type="button" aria-label="Settings" title="Settings &amp; sources">
+      <svg><use href="#i-settings"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============================== HOME ============================== -->
+<main id="home" class="home">
+  <section class="hero">
+    <div class="hero-mark"><svg><use href="#i-bolt"/></svg></div>
+    <h1>Find it anywhere.<br><span>Download it safely.</span></h1>
+    <p class="hero-sub">One search across every source you connect. Fake, spam and malware-laced torrents get flagged before you click.</p>
+    <form class="search search-hero" id="searchHero" role="search" autocomplete="off">
+      <svg class="search-icon"><use href="#i-search"/></svg>
+      <input id="qHero" type="search" maxlength="200" placeholder="What are you looking for? (typos are fine)" aria-label="Search" autofocus
+             role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggestHero">
+      <div class="suggest-box" id="suggestHero" role="listbox" hidden></div>
+      <label class="search-cat"><span class="sr-only">Search in</span><select id="heroCat"></select></label>
+      <label class="search-cat"><span class="sr-only">Language</span><select id="heroLang"></select></label>
+      <button type="button" class="mic-btn mic-hero" id="micHero" hidden aria-label="Voice search" title="Voice search (uses the language you picked)">🎤</button>
+      <button type="submit" class="btn btn-primary btn-lg">Search</button>
+    </form>
+    <div class="cat-tiles" id="catTiles" aria-label="Browse a category"></div>
+    <p class="try">Try:
+      <button type="button" class="link" data-try="Night of the Living Dead|movies">Night of the Living Dead</button> ·
+      <button type="button" class="link" data-try="Pride and Prejudice|books">Pride and Prejudice</button> ·
+      <button type="button" class="link" data-try="Doom|games">Doom</button> ·
+      <button type="button" class="link" data-try="Beethoven|music">Beethoven</button>
+    </p>
+  </section>
+
+  <section class="discover" id="personal" aria-label="Continue watching, your watchlist and classics"></section>
+  <section class="discover" id="discover" aria-label="Popular picks"></section>
+
+  <section class="features" aria-label="Built-in protection">
+    <article class="feature">
+      <div class="feature-icon"><svg><use href="#i-magnet"/></svg></div>
+      <h3>Clean magnets</h3>
+      <p>Each magnet is rebuilt from its verified hash. Ad redirects and hidden download parameters are removed.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon"><svg><use href="#i-shield"/></svg></div>
+      <h3>Redirect firewall</h3>
+      <p>Every hop is checked. No off-site jumps, no redirect chains, no reaching into your home network.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon"><svg><use href="#i-alert"/></svg></div>
+      <h3>Spam &amp; fake detection</h3>
+      <p>Catches "password in readme" scams, "codec required" lures, impossible sizes and fake seed counts.</p>
+    </article>
+    <article class="feature">
+      <div class="feature-icon"><svg><use href="#i-scan"/></svg></div>
+      <h3>Deep scan</h3>
+      <p>Reads the file list without downloading anything. Finds hidden <code>.exe</code>, <code>.scr</code> and <code>.lnk</code> files and checks the torrent is the real one.</p>
+    </article>
+    <article class="feature feature-wide">
+      <div class="feature-icon"><svg><use href="#i-safe"/></svg></div>
+      <div>
+        <h3>Download scanner</h3>
+        <p>After a download finishes, Microsoft Defender scans the real files, and BuzzTorrent checks what each file actually is (not just its name). It looks inside archives for programs and password locks and quarantines threats.</p>
+      </div>
+      <button type="button" class="btn btn-ghost" id="featureScanner">Set it up</button>
+    </article>
+  </section>
+  <p class="home-foot" id="homeFoot"></p>
+</main>
+
+<!-- ============================ RESULTS ============================= -->
+<div id="resultsView" class="results-view" hidden>
+  <aside class="sidebar" id="sidebar" aria-label="Filters">
+    <div class="sidebar-head">
+      <h2>Filters</h2>
+      <button class="icon-btn only-mobile" id="closeFilters" type="button" aria-label="Close filters"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <section class="facet">
+      <h3>Safety</h3>
+      <div id="facetVerdict" class="facet-list"></div>
+    </section>
+    <section class="facet">
+      <h3>Category</h3>
+      <div id="facetCat" class="facet-list"></div>
+    </section>
+    <section class="facet">
+      <h3>Language</h3>
+      <label class="field"><span class="sr-only">Language</span><select id="facetLang"></select></label>
+    </section>
+    <section class="facet" id="facetGenreBox" hidden>
+      <h3>Book genre</h3>
+      <div id="facetGenre" class="facet-list"></div>
+    </section>
+    <section class="facet">
+      <h3>Seeders</h3>
+      <div class="segmented" id="facetSeeds" role="radiogroup" aria-label="Minimum seeders"></div>
+    </section>
+    <section class="facet">
+      <h3>Size</h3>
+      <div class="segmented" id="facetSize" role="radiogroup" aria-label="Size"></div>
+    </section>
+    <section class="facet">
+      <h3>Quality</h3>
+      <div class="segmented" id="facetQuality" role="radiogroup" aria-label="Video quality"></div>
+    </section>
+    <section class="facet">
+      <h3>Sources</h3>
+      <div id="facetSources" class="source-list"></div>
+      <button type="button" class="link small" id="addSourceLink"><svg><use href="#i-plus"/></svg> Connect more sources</button>
+    </section>
+  </aside>
+
+  <main class="results-main">
+    <div class="private-bar" id="privateBar" hidden>
+      <span>🔒 <b>Private section</b> · nothing is saved: no history, no watchlist, nothing sent to Wikipedia</span>
+      <button type="button" class="btn btn-ghost btn-sm" id="adultLock">Lock</button>
+    </div>
+    <div class="results-head">
+      <div>
+        <h2 id="resultsTitle"></h2>
+        <p id="resultsSub" class="muted"></p>
+      </div>
+      <div class="results-tools">
+        <button class="btn btn-ghost only-mobile" id="openFilters" type="button"><svg><use href="#i-filter"/></svg> Filters</button>
+        <label class="select">
+          <span class="sr-only">Sort by</span>
+          <select id="sort">
+            <option value="quality">Best quality</option>
+            <option value="best">Safest first</option>
+            <option value="seeders">Most seeders</option>
+            <option value="size-desc">Largest</option>
+            <option value="size-asc">Smallest</option>
+            <option value="newest">Newest</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div id="queryNote"></div>
+    <div id="sourceErrors"></div>
+    <ul id="results" class="results"></ul>
+    <div id="empty" class="empty" hidden></div>
+  </main>
+</div>
+
+<!-- ============================== BROWSE ============================ -->
+<main id="browseView" class="browse-view" hidden>
+  <div class="browse-head">
+    <div>
+      <h1 id="browseTitle">Browse</h1>
+      <p class="muted" id="browseSub"></p>
+    </div>
+    <span class="muted small" id="browseCount"></span>
+  </div>
+  <div class="browse-tools" role="group" aria-label="Browse filters">
+    <label class="field"><span>Source</span><select id="bSource"></select></label>
+    <label class="field"><span>Category</span><select id="bCat"></select></label>
+    <label class="field"><span>Collection</span><select id="bCol"></select></label>
+    <label class="field"><span>Sort by</span><select id="bSort"></select></label>
+    <label class="field"><span>Decade</span><select id="bDecade"></select></label>
+    <label class="field"><span>Language</span><select id="bLang"></select></label>
+    <label class="field"><span>Genre</span><select id="bGenre"></select></label>
+  </div>
+  <div id="browseError"></div>
+  <ul class="pick-grid" id="bGrid"></ul>
+  <nav class="pager" id="bPager" aria-label="Pages"></nav>
+</main>
+
+<!-- ========================= DOWNLOAD SCANNER ======================= -->
+<main id="libraryView" class="scan-view" hidden>
+  <div class="scan-list-head">
+    <h2>On this PC</h2>
+    <span class="muted small" id="libSummary"></span>
+  </div>
+  <p class="muted small">Videos BuzzTorrent downloaded and the virus scanner checked as clean. Play them here, or on the TV under My PC.</p>
+  <div id="libBusy"></div>
+  <ul class="pick-grid lib-grid" id="libGrid"></ul>
+</main>
+
+<main id="scanView" class="scan-view" hidden>
+  <div class="scan-hero">
+    <div class="scan-hero-icon"><svg><use href="#i-safe"/></svg></div>
+    <div>
+      <h1>Download scanner</h1>
+      <p class="muted">Each finished download gets a real antivirus scan, and BuzzTorrent reads the actual file contents, so a program disguised as a movie gets caught.</p>
+    </div>
+  </div>
+
+  <div class="scan-cards" id="scanCards"></div>
+
+  <section class="panel" id="scanSetup">
+    <h2 id="setupTitle">Watch your downloads</h2>
+    <p class="muted small" id="setupHint">Choose the folder your torrent app (qBittorrent, Transmission…) saves downloads to. Each new download is scanned automatically once it finishes.</p>
+    <div class="folder-row">
+      <input id="scanFolder" placeholder="e.g. C:\Users\you\Downloads\Torrents" aria-label="Download folder" spellcheck="false">
+      <button type="button" class="btn btn-ghost" id="browseFolder">Browse…</button>
+    </div>
+    <div class="suggest" id="folderSuggest"></div>
+    <div class="set-row">
+      <div><div>Quarantine confirmed threats automatically</div>
+        <div class="muted small">Threats your antivirus confirms are removed right away. Files flagged only by BuzzTorrent's own checks wait for you to decide.</div></div>
+      <label class="switch"><input type="checkbox" id="scanAutoQ" checked><span></span><span class="sr-only">Auto-quarantine</span></label>
+    </div>
+    <details class="vt-box" id="vtBox">
+      <summary>Second opinion from VirusTotal (optional)</summary>
+      <p class="muted small">Checks risky files (programs, scripts, archives, documents) against about 70 antivirus engines.
+        Only each file's <b>fingerprint (SHA-256 hash)</b> is sent. Your files are never uploaded. Needs a free API key from virustotal.com.</p>
+      <div class="folder-row">
+        <input id="vtKey" type="password" placeholder="VirusTotal API key" autocomplete="off" spellcheck="false" aria-label="VirusTotal API key">
+        <button type="button" class="btn btn-ghost" id="vtClear" hidden>Remove key</button>
+      </div>
+    </details>
+    <div class="row-btns end">
+      <button type="button" class="btn btn-ghost" id="scanStop" hidden>Stop watching</button>
+      <button type="button" class="btn btn-primary" id="scanSave"><svg><use href="#i-safe"/></svg> <span>Start watching</span></button>
+    </div>
+    <p class="test-msg" id="scanMsg" role="status"></p>
+  </section>
+
+  <section class="dl-section" id="dlSection" hidden>
+    <div class="scan-list-head">
+      <h2>Downloading</h2>
+      <span class="muted small" id="dlSummary"></span>
+      <button type="button" class="btn btn-ghost btn-sm" id="dlOpenFolder"><svg><use href="#i-folder"/></svg> Open folder</button>
+    </div>
+    <ul id="dlItems" class="dl-items"></ul>
+  </section>
+
+  <div class="scan-list-head">
+    <h2>Downloads</h2>
+    <span class="muted small" id="scanSummary"></span>
+  </div>
+  <ul id="scanItems" class="scan-items"></ul>
+  <div id="scanEmpty" class="empty" hidden></div>
+</main>
+
+<!-- ============================ TEMPLATES =========================== -->
+<template id="tpl-card">
+  <li class="card">
+    <div class="verdict" role="img">
+      <svg><use/></svg>
+      <span class="verdict-label"></span>
+      <span class="verdict-score"></span>
+    </div>
+    <div class="card-body">
+      <h3 class="card-title" dir="auto"></h3>
+      <div class="meta"></div>
+      <div class="flags"></div>
+    </div>
+    <div class="card-actions">
+      <button class="btn btn-primary btn-sm act-get" type="button" title="Download in BuzzTorrent (virus-scanned when done)"><svg><use href="#i-download"/></svg><span>Download</span></button>
+      <a class="btn btn-ghost btn-sm act-open" title="Open in another torrent app (qBittorrent, uTorrent…)"><svg><use href="#i-magnet"/></svg><span>Magnet</span></a>
+      <button class="icon-btn act-copy" type="button" title="Copy magnet link" aria-label="Copy magnet link"><svg><use href="#i-copy"/></svg></button>
+      <a class="icon-btn act-dl" title="Download verified .torrent" aria-label="Download verified .torrent file"><svg><use href="#i-download"/></svg></a>
+      <button class="icon-btn act-scan" type="button" title="Deep scan file list" aria-label="Deep scan file list"><svg><use href="#i-scan"/></svg></button>
+      <a class="icon-btn act-src" target="_blank" rel="noopener noreferrer" aria-label="Open source page"><svg><use href="#i-external"/></svg></a>
+    </div>
+    <div class="scan-panel" hidden></div>
+  </li>
+</template>
+
+<template id="tpl-pick">
+  <li class="pick" tabindex="0">
+    <div class="pick-thumb">
+      <img alt="" loading="lazy" decoding="async">
+      <span class="pick-ph"></span>
+      <span class="pick-badge"><svg><use/></svg><b></b></span>
+    </div>
+    <div class="pick-body">
+      <h3 class="pick-title" dir="auto"></h3>
+      <div class="pick-meta"></div>
+    </div>
+    <div class="pick-actions">
+      <button class="btn btn-primary btn-sm act-get" type="button" title="Download in BuzzTorrent"><svg><use href="#i-download"/></svg><span>Download</span></button>
+      <a class="btn btn-ghost btn-sm act-open" title="Open in another torrent app"><svg><use href="#i-magnet"/></svg><span>Magnet</span></a>
+      <button class="icon-btn act-copy" type="button" title="Copy magnet link" aria-label="Copy magnet link"><svg><use href="#i-copy"/></svg></button>
+      <button class="icon-btn act-more" type="button" title="Details &amp; safety scan" aria-label="Details and safety scan"><svg><use href="#i-scan"/></svg></button>
+    </div>
+  </li>
+</template>
+
+<template id="tpl-skeleton">
+  <li class="card skeleton" aria-hidden="true">
+    <div class="verdict sk"></div>
+    <div class="card-body"><div class="sk sk-line w70"></div><div class="sk sk-line w40"></div></div>
+  </li>
+</template>
+
+<!-- ============================ SETTINGS ============================ -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-labelledby="drawerTitle" aria-hidden="true" inert>
+  <div class="drawer-head">
+    <h2 id="drawerTitle">Settings</h2>
+    <button class="icon-btn" id="closeDrawer" type="button" aria-label="Close settings"><svg><use href="#i-x"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <section class="set-section">
+      <h3>Sources</h3>
+      <p class="muted small">BuzzTorrent searches every enabled source at once.</p>
+      <div class="source-card">
+        <div class="source-card-main">
+          <div class="source-name">Internet Archive <span class="pill pill-safe">built-in</span></div>
+          <div class="muted small">Public-domain films, books, music and classic games. Web-seeded, curated.</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setArchive"><span></span><span class="sr-only">Enable Internet Archive</span></label>
+      </div>
+      <div id="setSources"></div>
+
+      <details class="add-source" id="addSource">
+        <summary><svg><use href="#i-plug"/></svg> Connect Jackett / Prowlarr</summary>
+        <div class="add-form">
+          <label>Name <input id="newName" maxlength="40" placeholder="Jackett"></label>
+          <label>Torznab URL <input id="newUrl" placeholder="http://127.0.0.1:9117/api/v2.0/indexers/all/results/torznab/api"></label>
+          <label>API key <input id="newKey" maxlength="128" placeholder="from the Jackett/Prowlarr dashboard" autocomplete="off"></label>
+          <div class="row-btns">
+            <button type="button" class="btn btn-ghost" id="testNew">Test connection</button>
+            <button type="button" class="btn btn-primary" id="addNew"><svg><use href="#i-plus"/></svg> Add source</button>
+          </div>
+          <p class="test-msg" id="testMsg" role="status"></p>
+          <div class="help muted small">
+            <b>Jackett:</b> install it, add the indexers you want, then copy the <i>API Key</i> from the top of its dashboard.
+            Use the URL above to search all indexers at once.<br>
+            <b>Prowlarr:</b> Settings → General → API Key. URL: <code>http://127.0.0.1:9696/&lt;indexer-id&gt;/api</code>.
+          </div>
+        </div>
+      </details>
+      <div class="row-btns end">
+        <span class="muted small" id="dirtyNote" hidden>Unsaved changes</span>
+        <button type="button" class="btn btn-primary" id="saveSettings" disabled>Save sources</button>
+      </div>
+    </section>
+
+    <section class="set-section">
+      <h3>Safety</h3>
+      <div class="set-row">
+        <div><div>Hide dangerous results</div><div class="muted small">They stay one click away in the Safety filter.</div></div>
+        <label class="switch"><input type="checkbox" id="setHideDanger"><span></span><span class="sr-only">Hide dangerous results</span></label>
+      </div>
+      <div class="set-row">
+        <div><div>Smart search &amp; details</div><div class="muted small">Fixes typos and fetches posters, cast and plot summaries
+          from Wikipedia and Wikidata. This sends your search words and the titles you open to Wikipedia.</div></div>
+        <label class="switch"><input type="checkbox" id="setSmart"><span></span><span class="sr-only">Smart search and details</span></label>
+      </div>
+      <div class="set-row">
+        <div><div>Family-friendly suggestions</div><div class="muted small">Keeps adult-themed titles out of the home page and Browse picks. Search isn't filtered.</div></div>
+        <label class="switch"><input type="checkbox" id="setFamily"><span></span><span class="sr-only">Family-friendly suggestions</span></label>
+      </div>
+    </section>
+
+    <section class="set-section">
+      <h3>Download scanner</h3>
+      <div class="set-row">
+        <div><div id="setScanState">Off</div><div class="muted small">Antivirus scan and content check of every finished download.</div></div>
+        <button type="button" class="btn btn-ghost" id="openScannerFromSettings">Open</button>
+      </div>
+    </section>
+
+    <section class="set-section" id="adultSection">
+      <h3>Private 18+ section</h3>
+      <p class="muted small">Hidden and PIN-locked. Adult results never appear in normal searches, and nothing about
+        them is kept: no history, no Continue watching, no watchlist, no Wikipedia lookups, no search words in the log.
+        Unlocking lasts 30 minutes or until BuzzTorrent closes.</p>
+      <div class="set-row">
+        <div><div>Turn on</div><div class="muted small">Needs a PIN.</div></div>
+        <label class="switch"><input type="checkbox" id="setAdult"><span></span><span class="sr-only">Turn on the private section</span></label>
+      </div>
+      <div class="set-row">
+        <div><div>Also on the TV</div><div class="muted small">Shows a 🔒 18+ tab on the TV, PIN-locked there too.</div></div>
+        <label class="switch"><input type="checkbox" id="setAdultTv"><span></span><span class="sr-only">Also on the TV</span></label>
+      </div>
+      <div class="add-form">
+        <label>PIN (4–8 digits) <input id="adultPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off"
+          placeholder="Enter the PIN"></label>
+        <div class="row-btns">
+          <button type="button" class="btn btn-ghost" id="adultSave">Save</button>
+          <button type="button" class="btn btn-primary" id="adultOpen">🔒 Open private section</button>
+        </div>
+        <p class="test-msg" id="adultMsg" role="status"></p>
+      </div>
+    </section>
+
+    <section class="set-section" id="tvSection">
+      <h3>Living-room TV</h3>
+      <div class="set-row">
+        <div><div>TV access</div><div class="muted small">Use BuzzTorrent on your Google TV over your home Wi-Fi. A paired TV can
+          search, browse, play free videos and start downloads here. Settings and the scanner stay on this PC only.</div></div>
+        <label class="switch"><input type="checkbox" id="setTv"><span></span><span class="sr-only">TV access</span></label>
+      </div>
+      <div id="tvBox" hidden>
+        <div class="tv-pin-row">
+          <div><div class="muted small">PIN to pair a TV</div><div class="tv-pin" id="tvPin">------</div></div>
+          <div><div class="muted small">This PC's address</div><div class="tv-addr" id="tvAddr">…</div></div>
+        </div>
+        <p class="muted small" id="tvState"></p>
+        <div class="set-row">
+          <div><div>Start with the computer</div><div class="muted small">Runs quietly in the background so the TV works whenever the PC is on.</div></div>
+          <label class="switch"><input type="checkbox" id="setTvAuto"><span></span><span class="sr-only">Start with Windows</span></label>
+        </div>
+        <div class="row-btns">
+          <button type="button" class="btn btn-ghost btn-sm" id="tvFirewall" hidden>Allow through Windows Firewall</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="tvNewPin">New PIN</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="tvForget">Unpair all TVs</button>
+        </div>
+        <details class="add-source">
+          <summary>Install the BuzzTorrent app on Google TV</summary>
+          <div class="help muted small">
+            <ol class="tv-steps">
+              <li>On the TV, install <b>Downloader</b> (by AFTVnews) from the Play Store.</li>
+              <li>TV Settings → <b>Apps</b> → <b>Security &amp; restrictions</b> → <b>Unknown sources</b> → allow <b>Downloader</b>.</li>
+              <li>In Downloader, type <code id="tvApkUrl">http://…/BuzzTorrentTV.apk</code> and choose <b>Install</b>.</li>
+              <li>Open <b>BuzzTorrent</b> from the TV's Apps row. It finds this PC by itself; enter the PIN above.</li>
+            </ol>
+            <b>Or with a pen drive:</b> run <code>python android\build_apk.py --usb</code> with the pen drive plugged in,
+            plug it into the TV, and open <code>BuzzTorrentTV-….apk</code> with a file manager app (e.g. <i>File Commander</i>
+            or <i>X-plore</i> from the Play Store; allow it under Unknown sources).<br>
+            <b>Updates:</b> changes to the TV screens reach the TV by themselves. A new TV app version installs over the old
+            one the same way (Downloader or pen drive); pairing and settings are kept.<br>
+            No app? Any TV browser works too: open <code id="tvWebUrl">http://…/tv</code>.
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="set-section">
+      <h3>Appearance</h3>
+      <div class="segmented" id="setTheme" role="radiogroup" aria-label="Theme"></div>
+    </section>
+
+    <section class="set-section">
+      <h3>About</h3>
+      <p class="muted small">BuzzTorrent <span id="version"></span>. The safety rating is based on warning signs. It can't see inside files you haven't downloaded, so keep antivirus on and never run programs that came inside a movie, music or book download.</p>
+    </section>
+  </div>
+</aside>
+
+<!-- ============================== MODAL ============================= -->
+<div class="modal-wrap" id="modal" hidden>
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalBody">
+    <div class="modal-icon"><svg><use href="#i-danger"/></svg></div>
+    <h2 id="modalTitle">This result looks dangerous</h2>
+    <div id="modalBody"></div>
+    <div class="row-btns end">
+      <button type="button" class="btn btn-ghost" id="modalCancel">Cancel</button>
+      <button type="button" class="btn btn-danger" id="modalOk">Continue anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================== PLAYER ============================ -->
+<div class="player-wrap" id="pcPlayer" hidden>
+  <div class="pcp" role="dialog" aria-modal="true" aria-labelledby="pcpTitle">
+    <div class="pcp-head">
+      <b id="pcpTitle" dir="auto"></b>
+      <label class="pcp-sel">Quality <select id="pcpQuality"></select></label>
+      <label class="pcp-sel">Subtitles <select id="pcpSubs"></select></label>
+      <button type="button" class="btn btn-ghost btn-sm" id="pcpRestart" hidden>↺ Start over</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="pcpExternal" hidden>Open in video player</button>
+      <button type="button" class="icon-btn" id="pcpClose" aria-label="Close player"><svg><use href="#i-x"/></svg></button>
+    </div>
+    <div class="pcp-stage">
+      <video id="pcpVideo" controls autoplay playsinline></video>
+      <div class="pcp-sub" id="pcpSub" aria-live="off"></div>
+      <div class="pcp-msg" id="pcpMsg" hidden></div>
+    </div>
+    <div class="pcp-eps" id="pcpEps" hidden></div>
+  </div>
+</div>
+
+<div class="modal-wrap" id="detail" hidden>
+  <div class="detail" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <button class="icon-btn detail-close" id="detailClose" type="button" aria-label="Close"><svg><use href="#i-x"/></svg></button>
+    <div class="detail-top">
+      <div class="detail-poster"><img alt="" id="detailImg"><span class="pick-ph" id="detailPh"></span></div>
+      <div class="detail-info">
+        <span class="badge-inline" id="detailBadge"></span>
+        <h2 id="detailTitle" dir="auto"></h2>
+        <p class="detail-tagline" id="detailTagline"></p>
+        <div class="meta" id="detailMeta"></div>
+        <div class="genre-row" id="detailGenres"></div>
+        <dl class="facts" id="detailFacts"></dl>
+        <div class="row-btns detail-actions">
+          <button class="btn btn-primary act-play" type="button" hidden>▶ Play</button>
+          <button class="btn btn-primary act-get" type="button"><svg><use href="#i-download"/></svg><span>Download</span></button>
+          <button class="btn btn-ghost act-watch" type="button" hidden>☆ Watchlist</button>
+          <a class="btn btn-ghost act-open"><svg><use href="#i-magnet"/></svg><span>Open magnet</span></a>
+          <button class="btn btn-ghost act-copy" type="button"><svg><use href="#i-copy"/></svg>Copy</button>
+          <a class="btn btn-ghost act-dl"><svg><use href="#i-download"/></svg>.torrent</a>
+          <a class="btn btn-ghost act-src" target="_blank" rel="noopener noreferrer"><svg><use href="#i-external"/></svg>Source page</a>
+        </div>
+        <div class="flags" id="detailFlags"></div>
+      </div>
+    </div>
+    <section class="detail-section" id="detailSummaryBox">
+      <h3>Summary</h3>
+      <ul class="highlights" id="detailHighlights" aria-label="Highlights" hidden></ul>
+      <div id="detailSummary" class="detail-summary" dir="auto"></div>
+      <p class="detail-credit" id="detailCredit"></p>
+    </section>
+    <section class="detail-section" id="detailWatchBox" hidden>
+      <h3>Where to watch</h3>
+      <p class="detail-credit">Searches each streaming service for this title. Availability depends on the service and your subscription.</p>
+      <div class="watch-row" id="detailWatch"></div>
+    </section>
+    <section class="detail-section" id="detailCastBox" hidden>
+      <h3>Cast</h3>
+      <div class="cast" id="detailCast"></div>
+    </section>
+    <section class="detail-section" id="detailUploadBox" hidden>
+      <h3>About this upload</h3>
+      <div class="detail-upload" id="detailUpload" dir="auto"></div>
+    </section>
+    <section class="detail-section">
+      <h3>Safety check of the file list</h3>
+      <div class="scan-panel" id="detailScan"></div>
+    </section>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script src="/app.js"></script>
+</body>
+</html>

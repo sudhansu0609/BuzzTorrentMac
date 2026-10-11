@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'">
+<title>BuzzTorrent setup</title>
+<style>
+  :root { --bg: #0b0d12; --surface: #151a24; --line: #2a3242; --text: #eef0f5; --text-2: #b0b7c8; --accent: #ffc531; --ink: #1a1300; --danger: #ff6b6b; }
+  * { box-sizing: border-box; }
+  html { font-size: calc(100vw / 64); }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--bg); color: var(--text);
+    font: 1rem/1.45 Roboto, system-ui, sans-serif; }
+  main { width: 40rem; text-align: center; }
+  .logo { width: 4rem; height: 4rem; border-radius: 1rem; background: var(--accent); display: inline-grid; place-items: center; }
+  .logo svg { width: 2.6rem; height: 2.6rem; }
+  h1 { font-size: 2rem; margin: .8rem 0 .3rem; }
+  p { color: var(--text-2); margin: .3rem 0; }
+  .list { display: flex; flex-direction: column; gap: .6rem; margin: 1.4rem auto; width: 26rem; }
+  button, input { font: inherit; color: inherit; height: 3rem; border-radius: 1.5rem; border: .12rem solid var(--line);
+    background: var(--surface); padding: 0 1.3rem; font-size: 1.1rem; }
+  button:focus, input:focus { outline: none; background: var(--accent); color: var(--ink); border-color: var(--accent); }
+  input:focus { background: var(--surface); color: var(--text); }
+  .row { display: flex; gap: .6rem; } .row input { flex: 1; min-width: 0; }
+  .err { color: var(--danger); min-height: 1.5rem; }
+  .spin { display: inline-block; width: 1.2rem; height: 1.2rem; border: .2rem solid var(--line); border-top-color: var(--accent);
+    border-radius: 50%; animation: s .8s linear infinite; vertical-align: -.2rem; margin-right: .5rem; }
+  @keyframes s { to { transform: rotate(360deg); } }
+  small { color: #7d869b; }
+</style>
+</head>
+<body>
+<main>
+  <div class="logo"><svg viewBox="0 0 32 32"><path d="M17.5 5 8 18h7l-1.5 9L24 14h-7l.5-9z" fill="#1a1300"/></svg></div>
+  <h1 id="title">Connect to your PC</h1>
+  <p id="lead">Looking for BuzzTorrent on your home network…</p>
+  <div class="list" id="list"></div>
+  <p class="err" id="err" role="alert"></p>
+  <p><small>On the PC: BuzzTorrent → Settings → Living-room TV → turn on TV access.<br>
+    The PC and this TV must be on the same Wi-Fi.</small></p>
+</main>
+<script>
+"use strict";
+const B = window.BuzzTV;
+const list = document.getElementById("list");
+const err = document.getElementById("err");
+const params = new URLSearchParams(location.search);
+const offline = params.get("offline");
+
+function el(tag, attrs, text) {
+  const e = document.createElement(tag);
+  for (const k in attrs || {}) e.setAttribute(k, attrs[k]);
+  if (text) e.textContent = text;
+  return e;
+}
+function connect(url) {
+  err.textContent = "";
+  if (B.check(url) !== "ok") { err.textContent = "BuzzTorrent didn't answer at " + url.replace("http://", "") + ". Is TV access on?"; return; }
+  B.setServer(url);
+}
+function manualRow() {
+  const row = el("div", { class: "row" });
+  const input = el("input", { type: "text", inputmode: "decimal", placeholder: "PC address, e.g. 192.168.1.9", "aria-label": "PC address" });
+  const go = el("button", { type: "button" }, "Connect");
+  go.onclick = () => {
+    let v = input.value.trim().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+    if (!/:\d+$/.test(v)) v += ":8765";
+    if (!/^(\d{1,3}\.){3}\d{1,3}:\d{1,5}$/.test(v)) { err.textContent = "Type the PC's address shown in BuzzTorrent settings, like 192.168.1.9"; return; }
+    connect("http://" + v);
+  };
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") go.click(); });
+  row.append(input, go);
+  return row;
+}
+function scanButton(label) {
+  const b = el("button", { type: "button" }, label);
+  b.onclick = scan;
+  return b;
+}
+function render(found) {
+  list.replaceChildren();
+  if (offline) {
+    document.getElementById("title").textContent = "Can't reach your PC";
+    document.getElementById("lead").textContent = "BuzzTorrent at " + offline.replace("http://", "") + " didn't answer. Is the PC on?";
+    const retry = el("button", { type: "button" }, "Try again");
+    retry.onclick = () => connect(offline);
+    list.append(retry);
+  } else {
+    document.getElementById("lead").textContent = found.length
+      ? "Found BuzzTorrent. Choose your PC:" : "Couldn't find BuzzTorrent automatically. Type the PC's address:";
+  }
+  for (const url of found) {
+    const b = el("button", { type: "button" }, "PC at " + url.replace("http://", "").replace(":8765", ""));
+    b.onclick = () => connect(url);
+    list.append(b);
+  }
+  list.append(manualRow(), scanButton(found.length || offline ? "Search the network again" : "Search again"));
+  list.querySelector("button, input").focus();
+}
+function scan() {
+  err.textContent = "";
+  list.replaceChildren(el("p", {}, ""));
+  list.firstChild.innerHTML = '<span class="spin"></span>Searching your network…';
+  B.startDiscover();
+}
+window.onDiscover = (found) => {
+  if (found.length === 1 && !offline && !params.has("pick")) { connect(found[0]); return; }
+  render(found);
+};
+document.addEventListener("keydown", (e) => {
+  const items = [...list.querySelectorAll("button, input")];
+  const i = items.indexOf(document.activeElement);
+  const t = e.target;
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+    e.preventDefault();
+    const next = items[Math.max(0, Math.min(items.length - 1, i + (e.key === "ArrowDown" ? 1 : -1)))];
+    if (next) next.focus();
+  } else if ((e.key === "ArrowRight" || e.key === "ArrowLeft") && !(t.tagName === "INPUT" && t.value)) {
+    const row = t.closest(".row");
+    if (row) { e.preventDefault(); row.children[e.key === "ArrowRight" ? 1 : 0].focus(); }
+  }
+});
+if (offline) render([]); else scan();
+</script>
+</body>
+</html>

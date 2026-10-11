@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BuzzTorrent TV</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/tv.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><img src="/favicon.svg" alt=""><span>BuzzTorrent</span></div>
+  <form class="search" id="searchForm" role="search">
+    <input id="q" type="search" placeholder="Search movies, TV shows, music…" enterkeyhint="search"
+           autocomplete="off" spellcheck="false" aria-label="Search">
+  </form>
+  <button class="pill-btn mic" id="micBtn" type="button" hidden aria-label="Voice search">🎤</button>
+  <button class="pill-btn mic" id="micHiBtn" type="button" hidden aria-label="Voice search in Hindi">🎤 हिंदी</button>
+  <button class="pill-btn" id="libBtn" type="button">My PC</button>
+  <button class="pill-btn" id="dlBtn" type="button">Downloads</button>
+  <button class="pill-btn" id="homeBtn" type="button">Home</button>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="Category"></nav>
+<nav class="langs" id="langs" aria-label="Language"></nav>
+
+<main id="main" tabindex="-1"></main>
+
+<!-- details -->
+<section class="overlay" id="detail" hidden aria-modal="true" role="dialog" aria-labelledby="dTitle">
+  <div class="detail">
+    <div class="d-poster"><img id="dPoster" alt=""></div>
+    <div class="d-body">
+      <div class="d-badges" id="dBadges"></div>
+      <h1 id="dTitle"></h1>
+      <p class="d-meta" id="dMeta"></p>
+      <div class="d-actions" id="dActions"></div>
+      <p class="d-summary" id="dSummary"></p>
+      <ul class="d-flags" id="dFlags"></ul>
+      <h2 class="d-h">Where to watch</h2>
+      <p class="d-note" id="dWatchNote"></p>
+      <div class="d-ott" id="dOtt"></div>
+    </div>
+  </div>
+</section>
+
+<!-- episode / file picker -->
+<section class="overlay" id="picker" hidden aria-modal="true" role="dialog" aria-labelledby="pTitle">
+  <div class="picker">
+    <h1 id="pTitle">Choose an episode</h1>
+    <div class="p-list" id="pList"></div>
+  </div>
+</section>
+
+<!-- the PC's scanned downloads -->
+<section class="overlay" id="library" hidden aria-modal="true" role="dialog" aria-labelledby="libTitle">
+  <div class="picker">
+    <h1 id="libTitle">On your PC</h1>
+    <p class="d-note">Videos your PC downloaded and its virus scanner checked. They stream from the PC.</p>
+    <div class="grid" id="libGrid"></div>
+  </div>
+</section>
+
+<!-- videos saved on this TV -->
+<section class="overlay" id="downloads" hidden aria-modal="true" role="dialog" aria-labelledby="dlTitle">
+  <div class="picker">
+    <h1 id="dlTitle">Downloads</h1>
+    <h2 class="d-h">On your PC</h2>
+    <div class="p-list" id="dlPc"></div>
+    <div id="dlTvBox" hidden>
+      <h2 class="d-h">Saved on this TV</h2>
+      <p class="d-note" id="dlSpace"></p>
+      <div class="p-list" id="dlList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- player -->
+<section class="overlay player" id="player" hidden aria-modal="true" role="dialog" aria-label="Video player">
+  <video id="video" playsinline preload="auto"></video>
+  <div class="hud" id="hud">
+    <div class="hud-title" id="hudTitle"></div>
+    <div class="hud-bar"><div class="hud-fill" id="hudFill"></div></div>
+    <div class="hud-row">
+      <span id="hudTime">0:00</span>
+      <span class="hud-help">OK play/pause · ◀ ▶ skip 10 s · Back to close</span>
+      <span id="hudDur">0:00</span>
+    </div>
+    <div class="hud-btns" id="hudBtns"></div>
+  </div>
+  <div class="player-msg" id="playerMsg" hidden></div>
+</section>
+
+<!-- pairing -->
+<section class="overlay" id="pair" hidden aria-modal="true" role="dialog" aria-labelledby="pairTitle">
+  <div class="pair">
+    <img src="/favicon.svg" alt="" class="pair-logo">
+    <h1 id="pairTitle">Pair this TV</h1>
+    <p>On your PC, open BuzzTorrent → <b>Settings</b> → <b>Living-room TV</b> and enter the 6-digit PIN shown there.</p>
+    <div class="pin" id="pinShow" aria-live="polite"></div>
+    <div class="pad" id="pad"></div>
+    <p class="pair-err" id="pairErr" role="alert"></p>
+  </div>
+</section>
+
+<!-- private section PIN -->
+<section class="overlay" id="adultBox" hidden aria-modal="true" role="dialog" aria-labelledby="adultTitle">
+  <div class="pair">
+    <h1 id="adultTitle">🔒 Private section</h1>
+    <p>Enter the PIN set on the PC. It stays open for 30 minutes or until you close the app, and nothing is saved.</p>
+    <div class="pin" id="adultPinShow" aria-live="polite"></div>
+    <div class="pad" id="adultPad"></div>
+    <p class="pair-err" id="adultErr" role="alert"></p>
+  </div>
+</section>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script src="/tv.js"></script>
+</body>
+</html>
